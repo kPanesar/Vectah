@@ -12,24 +12,20 @@ int main()
     Cairo::RefPtr<Cairo::Context> cr = Cairo::Context::create(surface);
 
     cr->save(); // save the state of the context
-    cr->set_source_rgb(1, 0, 0);
+    cr->set_source_rgb(0.1, 0.1, 0.1);
     cr->paint(); // fill image with the color
     cr->restore(); // color is back to black now
 
     cr->save();
-    // draw a border around the image
-    cr->set_line_width(20.0); // make the line wider
-    cr->rectangle(0.0, 0.0, cairo_image_surface_get_width(surface->cobj()), height);
-    cr->stroke();
-
-    cr->set_source_rgba(0.0, 0.0, 0.0, 0.7);
+    cr->set_source_rgba(1, 1, 1, 0.7);
     // draw a circle in the center of the image
-    cr->arc(width/2.0, height/2.0, height/4.0, 0.0, 2.0*M_PI);
+    cr->arc(width/2.0, height/2.0, height/4.0, M_PI, 0);
     cr->stroke();
 
     // draw a diagonal line
-    cr->move_to(width/4.0, height/4.0);
-    cr->line_to(width*3.0/4.0, height*3.0/4.0);
+    double line_width = cr->get_line_width();
+    cr->move_to(0, height/2 + line_width/2);
+    cr->line_to(width, height/2 + line_width/2);
     cr->stroke();
     cr->restore();
 

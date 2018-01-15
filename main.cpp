@@ -1,6 +1,7 @@
 #include <string>
 #include <iostream>
 #include <cairomm/context.h>
+#include <librsvg/rsvg.h>
 
 int main()
 {
@@ -10,6 +11,8 @@ int main()
     Cairo::RefPtr<Cairo::SvgSurface> surface = Cairo::SvgSurface::create(filename, width, height);
 
     Cairo::RefPtr<Cairo::Context> cr = Cairo::Context::create(surface);
+
+    RsvgHandle *handle = new RsvgHandle();
 
     cr->save(); // save the state of the context
     cr->set_source_rgb(0.1, 0.1, 0.1);

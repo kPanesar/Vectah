@@ -34,4 +34,13 @@ else (POPPLER_FOUND)
     message(FATAL_ERROR "Poppler not found! Please make sure it is installed.")
 endif (POPPLER_FOUND)
 
+find_package(Librsvg REQUIRED)
+if (LIBRSVG_FOUND)
+    include_directories(${LIBRSVG_INCLUDE_DIRS})
+    set(LIBS ${LIBS} ${LIBRSVG_LIBRARIES})
+else (LIBRSVG_FOUND)
+    message(FATAL_ERROR "Librsvg not found! Please make sure it is installed.")
+endif (LIBRSVG_FOUND)
+
+
 target_link_libraries(Vecto ${LIBS})

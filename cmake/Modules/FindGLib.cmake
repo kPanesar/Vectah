@@ -5,7 +5,6 @@
 #  GLIB_LIBRARIES - The libraries needed to use GLib
 #  GLIB_DEFINITIONS - Compiler switches required for using GLib
 
-
 if (GLIB_INCLUDE_DIRS AND GLIB_LIBRARIES)
     set(GLIB_FOUND TRUE) # in-cache
 
@@ -29,24 +28,8 @@ else (GLIB_INCLUDE_DIRS AND GLIB_LIBRARIES)
                 HINTS ${PC_LIBDIR} ${PC_LIBRARY_DIRS} ${_GLIB_LIBRARY_DIR}
                 PATH_SUFFIXES glib-2.0/include)
 
-        FOREACH (_component ${GLIB_FIND_COMPONENTS})
-            IF (${_component} STREQUAL "gio")
-                find_library(GLIB_GIO_LIBRARIES NAMES gio-2.0 HINTS ${_GLIB_LIBRARY_DIR})
-                set(ADDITIONAL_REQUIRED_VARS ${ADDITIONAL_REQUIRED_VARS} GLIB_GIO_LIBRARIES)
-            ELSEIF (${_component} STREQUAL "gobject")
-                find_library(GLIB_GOBJECT_LIBRARIES NAMES gobject-2.0 HINTS ${_GLIB_LIBRARY_DIR})
-                set(ADDITIONAL_REQUIRED_VARS ${ADDITIONAL_REQUIRED_VARS} GLIB_GOBJECT_LIBRARIES)
-            ELSEIF (${_component} STREQUAL "gmodule")
-                find_library(GLIB_GMODULE_LIBRARIES NAMES gmodule-2.0 HINTS ${_GLIB_LIBRARY_DIR})
-                set(ADDITIONAL_REQUIRED_VARS ${ADDITIONAL_REQUIRED_VARS} GLIB_GMODULE_LIBRARIES)
-            ELSEIF (${_component} STREQUAL "gthread")
-                find_library(GLIB_GTHREAD_LIBRARIES NAMES gthread-2.0 HINTS ${_GLIB_LIBRARY_DIR})
-                set(ADDITIONAL_REQUIRED_VARS ${ADDITIONAL_REQUIRED_VARS} GLIB_GTHREAD_LIBRARIES)
-            ENDIF ()
-        ENDFOREACH ()
-
         include(FindPackageHandleStandardArgs)
-        find_package_handle_standard_args(GLib DEFAULT_MSG GLIB_LIBRARY GLIB_INCLUDE_DIR GLIBCONFIG_INCLUDE_DIR ${ADDITIONAL_REQUIRED_VARS})
+        find_package_handle_standard_args(GLib DEFAULT_MSG GLIB_LIBRARY GLIB_INCLUDE_DIR GLIBCONFIG_INCLUDE_DIR)
 
         mark_as_advanced(GLIB_INCLUDE_DIR GLIB_LIBRARY GLIBCONFIG_INCLUDE_DIR)
 

@@ -18,6 +18,14 @@ elseif (CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -pedantic")
 endif ()
 
+find_package(GObject REQUIRED)
+if (GOBJECT_FOUND)
+    include_directories(${GOBJECT_INCLUDE_DIRS})
+    set(LIBS ${LIBS} ${GOBJECT_LIBRARIES})
+else (GOBJECT_FOUND)
+    message(FATAL_ERROR "GOBject not found! Please make sure it is installed.")
+endif (GOBJECT_FOUND)
+
 find_package(Cairomm REQUIRED)
 if (CAIROMM_FOUND)
     include_directories(${CAIROMM_INCLUDE_DIRS})
@@ -41,6 +49,5 @@ if (LIBRSVG_FOUND)
 else (LIBRSVG_FOUND)
     message(FATAL_ERROR "Librsvg not found! Please make sure it is installed.")
 endif (LIBRSVG_FOUND)
-
 
 target_link_libraries(Vectah ${LIBS})

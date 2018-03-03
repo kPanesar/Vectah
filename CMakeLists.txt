@@ -5,7 +5,7 @@ set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake/Modules")
 
 set(SOURCE_FILES main.cpp)
-add_executable(Vecto ${SOURCE_FILES})
+add_executable(Vectah ${SOURCE_FILES})
 
 if (MSVC)
     # Force to always compile with W4
@@ -43,4 +43,4 @@ else (LIBRSVG_FOUND)
 endif (LIBRSVG_FOUND)
 
 
-target_link_libraries(Vecto ${LIBS})
+target_link_libraries(Vectah ${LIBS})

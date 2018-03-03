@@ -12,9 +12,9 @@ if (LIBRSVG_INCLUDE_DIRS AND LIBRSVG_LIBRARIES)
 else (LIBRSVG_INCLUDE_DIRS AND LIBRSVG_LIBRARIES)
     if (NOT WIN32)
         find_package(PkgConfig)
+        find_package(GLib REQUIRED gobject gio)
         find_package(Cairo REQUIRED)
-        find_package(GLib REQUIRED)
-        find_package(GDKPixbuf REQUIRED)
+        find_package(GdkPixbuf REQUIRED)
 
         pkg_check_modules(PC_LIBRSVG QUIET librsvg-2)
         set(LIBRSVG_DEFINITIONS ${PC_LIBRSVG_CFLAGS_OTHER})
@@ -23,7 +23,7 @@ else (LIBRSVG_INCLUDE_DIRS AND LIBRSVG_LIBRARIES)
                 HINTS ${PC_LIBRSVG_INCLUDEDIR} ${PC_LIBRSVG_INCLUDE_DIRS}
                 PATH_SUFFIXES librsvg-2.0)
 
-        find_library(LIBRSVG_LIBRARY NAMES rsvg-2.0 librsvg-2.0
+        find_library(LIBRSVG_LIBRARY NAMES rsvg-2 librsvg-2
                 HINTS ${PC_LIBRSVG_LIBDIR} ${PC_LIBRSVG_LIBRARY_DIRS})
 
         include(FindPackageHandleStandardArgs)

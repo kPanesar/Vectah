@@ -20,14 +20,33 @@ else (GLIB_INCLUDE_DIRS AND GLIB_LIBRARIES)
                 HINTS ${PC_GLIB_INCLUDEDIR} ${PC_GLIB_INCLUDE_DIRS}
                 PATH_SUFFIXES glib-2.0)
 
-        find_path(GLIBCONFIG_INCLUDE_DIR glibconfig.h
-                HINTS ${PC_GLIB_INCLUDEDIR} ${PC_GLIB_INCLUDE_DIRS})
-
         find_library(GLIB_LIBRARY NAMES glib-2.0 libglib-2.0
                 HINTS ${PC_GLIB_LIBDIR} ${PC_GLIB_LIBRARY_DIRS})
 
+        get_filename_component(_GLIB_LIBRARY_DIR ${GLIB_LIBRARY} DIRECTORY)
+        find_path(GLIBCONFIG_INCLUDE_DIR
+                NAMES glibconfig.h
+                HINTS ${PC_LIBDIR} ${PC_LIBRARY_DIRS} ${_GLIB_LIBRARY_DIR}
+                PATH_SUFFIXES glib-2.0/include)
+
+        FOREACH (_component ${GLIB_FIND_COMPONENTS})
+            IF (${_component} STREQUAL "gio")
+                find_library(GLIB_GIO_LIBRARIES NAMES gio-2.0 HINTS ${_GLIB_LIBRARY_DIR})
+                set(ADDITIONAL_REQUIRED_VARS ${ADDITIONAL_REQUIRED_VARS} GLIB_GIO_LIBRARIES)
+            ELSEIF (${_component} STREQUAL "gobject")
+                find_library(GLIB_GOBJECT_LIBRARIES NAMES gobject-2.0 HINTS ${_GLIB_LIBRARY_DIR})
+                set(ADDITIONAL_REQUIRED_VARS ${ADDITIONAL_REQUIRED_VARS} GLIB_GOBJECT_LIBRARIES)
+            ELSEIF (${_component} STREQUAL "gmodule")
+                find_library(GLIB_GMODULE_LIBRARIES NAMES gmodule-2.0 HINTS ${_GLIB_LIBRARY_DIR})
+                set(ADDITIONAL_REQUIRED_VARS ${ADDITIONAL_REQUIRED_VARS} GLIB_GMODULE_LIBRARIES)
+            ELSEIF (${_component} STREQUAL "gthread")
+                find_library(GLIB_GTHREAD_LIBRARIES NAMES gthread-2.0 HINTS ${_GLIB_LIBRARY_DIR})
+                set(ADDITIONAL_REQUIRED_VARS ${ADDITIONAL_REQUIRED_VARS} GLIB_GTHREAD_LIBRARIES)
+            ENDIF ()
+        ENDFOREACH ()
+
         include(FindPackageHandleStandardArgs)
-        find_package_handle_standard_args(GLib DEFAULT_MSG GLIB_LIBRARY GLIB_INCLUDE_DIR GLIBCONFIG_INCLUDE_DIR)
+        find_package_handle_standard_args(GLib DEFAULT_MSG GLIB_LIBRARY GLIB_INCLUDE_DIR GLIBCONFIG_INCLUDE_DIR ${ADDITIONAL_REQUIRED_VARS})
 
         mark_as_advanced(GLIB_INCLUDE_DIR GLIB_LIBRARY GLIBCONFIG_INCLUDE_DIR)
 

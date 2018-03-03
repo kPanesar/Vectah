@@ -1,6 +1,5 @@
 #include <string>
 #include <iostream>
-#include <cairo/cairo.h>
 #include <cairomm/context.h>
 #include <librsvg/rsvg.h>
 #include <ctime>
@@ -15,7 +14,6 @@ int main()
 
     string filename = "image.svg";
     string filename2 = "imageOut.svg";
-    string filename3 = "imageOut.png";
 
     GError *error = new GError();
     GError **errorPtrPtr = &error;
@@ -25,24 +23,21 @@ int main()
 
     int width = dimension_data->width;
     int height = dimension_data->height;
-    cairo_surface_t * csurface = cairo_svg_surface_create(filename2.data(), width, height);
-    cairo_t *cr = cairo_create (csurface);
+
+    Cairo::RefPtr<Cairo::SvgSurface> surface = Cairo::SvgSurface::create(filename2, width, height);
+    Cairo::RefPtr<Cairo::Context> context = Cairo::Context::create(surface);
 
     if(handle)
     {
-        rsvg_handle_render_cairo(handle, cr);
-//        cairo_surface_write_to_png(csurface, filename3.data());
-        cairo_show_page(cr);
-        cairo_surface_finish(csurface);
+        rsvg_handle_render_cairo(handle, context->cobj());
+        context->show_page();
+        surface->finish();
     }
     else
     {
         cout << "Failed to read the SVG file!" << endl;
         cout << error->message << endl;
     }
-
-    // Free the RsvgHandle
-//    g_object_unref(handle);
 
     clock_t end = clock();
 
@@ -81,6 +76,7 @@ void testCairo(string filename)
     cr->restore();
 
     cr->show_page();
+    surface->finish();
 
     cout << "Wrote SVG file \"" << filename << "\"" << endl;
 }

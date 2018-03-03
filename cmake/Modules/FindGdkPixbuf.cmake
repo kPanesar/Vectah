@@ -34,38 +34,3 @@ else (GDKPIXBUF_INCLUDE_DIRS AND GDKPIXBUF_LIBRARIES)
         set(GDKPIXBUF_FOUND TRUE)
     endif (NOT WIN32)
 endif (GDKPIXBUF_INCLUDE_DIRS AND GDKPIXBUF_LIBRARIES)
-
-#FIND_PACKAGE(PkgConfig)
-#PKG_CHECK_MODULES(PC_GTK-PIXBUF QUIET gdk-pixbuf-2.0)
-#
-## Main include dir
-#find_path(GDKPIXBUF_INCLUDE_DIRS
-#        NAMES
-#        gdk-pixbuf/gdk-pixbuf.h
-#
-#        PATH_SUFFIXES
-#        gdk-pixbuf-2.0
-#
-#        PATHS
-#        /usr/include
-#        /usr/local/include
-#        $ENV{GDKPIXBUF_DIR}/include
-#        ${PC_GTK_PIXBUF_includedir}
-#        )
-#
-## Finally the library itself
-#find_library(GDKPIXBUF_LIBRARIES
-#        NAMES
-#        gdk_pixbuf-2.0
-#
-#        PATHS
-#        /usr/lib
-#        /usr/local/lib
-#        $ENV{GDKPIXBUF_DIR}/lib
-#        ${PC_GTK_PIXBUF_libdir}
-#        )
-#
-#include(FindPackageHandleStandardArgs)
-#
-#find_package_handle_standard_args(GDKPIXBUF DEFAULT_MSG GDKPIXBUF_LIBRARIES GDKPIXBUF_INCLUDE_DIRS)
-#mark_as_advanced(GDKPIXBUF_INCLUDE_DIRS GDKPIXBUF_LIBRARIES)

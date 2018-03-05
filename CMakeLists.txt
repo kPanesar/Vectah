@@ -4,8 +4,9 @@ project(Vectah)
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake/Modules")
 
-set(SOURCE_FILES main.cpp)
-add_executable(Vectah ${SOURCE_FILES})
+set(SOURCE_FILES src/main.cpp src/vectah.cpp)
+set(HEADER_FILES src/vectah.h)
+add_executable(Vectah ${SOURCE_FILES} ${HEADER_FILES})
 
 if (MSVC)
     # Force to always compile with W4

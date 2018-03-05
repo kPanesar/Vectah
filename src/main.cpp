@@ -1,12 +1,12 @@
-#include <string>
-#include <iostream>
+#include "vectah.h"
+#include <gtkmm/application.h>
 #include <cairomm/context.h>
 #include <librsvg/rsvg.h>
-#include <gtkmm.h>
+#include <iostream>
 
 using namespace std;
 //
-void testCairo(string filename);
+void testCairo(const string& filename);
 //
 //int main()
 //{
@@ -81,12 +81,12 @@ void testCairo(const string& filename)
     cout << "Wrote SVG file \"" << filename << "\"" << endl;
 }
 
-int main(int argc, char* argv[])
+int main (int argc, char *argv[])
 {
-    auto app = Gtk::Application::create(argc, argv, "org.gtkmm.examples.base");
+    auto app = Gtk::Application::create(argc, argv, "org.gtkmm.example");
 
-    Gtk::Window window;
-    window.set_default_size(200, 200);
+    Vectah helloworld;
 
-    return app->run(window);
+    //Shows the window and returns when it is closed.
+    return app->run(helloworld);
 }

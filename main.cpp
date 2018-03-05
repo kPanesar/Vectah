@@ -2,54 +2,54 @@
 #include <iostream>
 #include <cairomm/context.h>
 #include <librsvg/rsvg.h>
-#include <ctime>
+#include <gtkmm.h>
 
 using namespace std;
-
+//
 void testCairo(string filename);
-
-int main()
-{
-    clock_t start = clock();
-
-    string filename = "image.svg";
-    string filename2 = "imageOut.svg";
-
-    GError *error = new GError();
-    GError **errorPtrPtr = &error;
-    RsvgHandle* handle = rsvg_handle_new_from_file(filename.data(), errorPtrPtr);
-    RsvgDimensionData *dimension_data = new RsvgDimensionData();
-    rsvg_handle_get_dimensions(handle, dimension_data);
-
-    int width = dimension_data->width;
-    int height = dimension_data->height;
-
-    Cairo::RefPtr<Cairo::SvgSurface> surface = Cairo::SvgSurface::create(filename2, width, height);
-    Cairo::RefPtr<Cairo::Context> context = Cairo::Context::create(surface);
-
-    if(handle)
-    {
-        rsvg_handle_render_cairo(handle, context->cobj());
-        context->show_page();
-        surface->finish();
-    }
-    else
-    {
-        cout << "Failed to read the SVG file!" << endl;
-        cout << error->message << endl;
-    }
-
-    clock_t end = clock();
-
-    double run_time = (end - start)/(double) CLOCKS_PER_SEC;
-    cout << "The operation took " << run_time * 1000 << " milliseconds.";
-
-    g_object_unref(handle);
-
-    return 0;
-}
-
-void testCairo(string filename)
+//
+//int main()
+//{
+//    clock_t start = clock();
+//
+//    string filename = "image.svg";
+//    string filename2 = "imageOut.svg";
+//
+//    GError *error = new GError();
+//    GError **errorPtrPtr = &error;
+//    RsvgHandle* handle = rsvg_handle_new_from_file(filename.data(), errorPtrPtr);
+//    RsvgDimensionData *dimension_data = new RsvgDimensionData();
+//    rsvg_handle_get_dimensions(handle, dimension_data);
+//
+//    int width = dimension_data->width;
+//    int height = dimension_data->height;
+//
+//    Cairo::RefPtr<Cairo::SvgSurface> surface = Cairo::SvgSurface::create(filename2, width, height);
+//    Cairo::RefPtr<Cairo::Context> context = Cairo::Context::create(surface);
+//
+//    if(handle)
+//    {
+//        rsvg_handle_render_cairo(handle, context->cobj());
+//        context->show_page();
+//        surface->finish();
+//    }
+//    else
+//    {
+//        cout << "Failed to read the SVG file!" << endl;
+//        cout << error->message << endl;
+//    }
+//
+//    clock_t end = clock();
+//
+//    double run_time = (end - start)/(double) CLOCKS_PER_SEC;
+//    cout << "The operation took " << run_time * 1000 << " milliseconds.";
+//
+//    g_object_unref(handle);
+//
+//    return 0;
+//}
+//
+void testCairo(const string& filename)
 {
     double width = 1920;
     double height = 1080;
@@ -81,3 +81,12 @@ void testCairo(string filename)
     cout << "Wrote SVG file \"" << filename << "\"" << endl;
 }
 
+int main(int argc, char* argv[])
+{
+    auto app = Gtk::Application::create(argc, argv, "org.gtkmm.examples.base");
+
+    Gtk::Window window;
+    window.set_default_size(200, 200);
+
+    return app->run(window);
+}

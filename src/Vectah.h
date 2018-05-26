@@ -5,22 +5,18 @@
 #ifndef VECTAH_VECTAH_H
 #define VECTAH_VECTAH_H
 
-#include <gtkmm/button.h>
 #include <gtkmm/window.h>
+#include "IconArea.h"
 
-class Vectah : public Gtk::Window
-{
+class Vectah : public Gtk::Window {
 
 public:
     Vectah();
     virtual ~Vectah();
 
-protected:
-    //Signal handlers:
-    void OnButtonClicked();
-
+private:
     //Member widgets:
-    Gtk::Button m_button;
+    IconArea icon_area;
 };
 
 #endif //VECTAH_VECTAH_H

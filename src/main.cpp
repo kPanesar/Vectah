@@ -1,7 +1,4 @@
-#include "vectah.h"
-#include <gtkmm/application.h>
-#include <cairomm/context.h>
-#include <librsvg/rsvg.h>
+#include "Vectah.h"
 #include <iostream>
 
 using namespace std;
@@ -81,7 +78,7 @@ void testCairo(const string& filename)
     cout << "Wrote SVG file \"" << filename << "\"" << endl;
 }
 
-int main (int argc, char *argv[])
+int main(int argc, char* argv[])
 {
     auto app = Gtk::Application::create(argc, argv, "org.gtkmm.example");
 

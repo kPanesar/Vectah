@@ -1,5 +1,5 @@
 //
-// Created by karan on 5/3/18.
+// Created by Karanvir Panesar on 5/3/18.
 //
 
 #ifndef VECTAH_ICONAREA_H

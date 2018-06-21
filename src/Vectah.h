@@ -1,5 +1,5 @@
 //
-// Created by karan on 4/3/18.
+// Created by Karanvir Panesar on 4/3/18.
 //
 
 #ifndef VECTAH_VECTAH_H

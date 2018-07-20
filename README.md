@@ -7,3 +7,11 @@ Here's a preliminary concept of what Vectah may look like:
 
 
 ![](https://i.imgur.com/mmDOYAh.jpg)
+
+#### Building on Linux (Ubuntu 18.04)
+
+```console
+sudo apt install libgtkmm-3.0-dev librsvg2-dev cmake
+cd Vectah && mkdir build
+cd build && cmake ../
+```

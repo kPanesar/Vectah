@@ -11,7 +11,7 @@ class IconArea : public Gtk::DrawingArea {
 
 public:
     IconArea();
-    virtual ~IconArea();
+    ~IconArea();
 
 protected:
     //Override default signal handler:

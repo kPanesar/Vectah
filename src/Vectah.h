@@ -5,18 +5,28 @@
 #ifndef VECTAH_VECTAH_H
 #define VECTAH_VECTAH_H
 
-#include <gtkmm/window.h>
-#include "IconArea.h"
+#include <gtkmm/image.h>
+#include <gtkmm/grid.h>
+#include <gtkmm/button.h>
+#include <gtkmm/scrolledwindow.h>
 
-class Vectah : public Gtk::Window {
+#include <librsvg/rsvg.h>
+#include <vector>
+
+#include "Icon.h"
+
+#define ICON_PATH "../assets/sample-icons"
+
+class Vectah : public Gtk::ScrolledWindow {
 
 public:
     Vectah();
-    virtual ~Vectah();
+    ~Vectah();
 
 private:
     //Member widgets:
-    IconArea icon_area;
+    std::vector<Icon*> icons;
+    Gtk::Grid iconGrid;
 };
 
 #endif //VECTAH_VECTAH_H

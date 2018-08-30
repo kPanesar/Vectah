@@ -6,27 +6,68 @@
 #define VECTAH_VECTAH_H
 
 #include <gtkmm/image.h>
-#include <gtkmm/grid.h>
+#include <gtkmm/iconview.h>
 #include <gtkmm/button.h>
+#include <gtkmm/window.h>
+#include <gdkmm/screen.h>
 #include <gtkmm/scrolledwindow.h>
+#include <gtkmm/box.h>
+#include <gtkmm/entry.h>
+#include <gtkmm/treemodel.h>
+#include <gtkmm/buttonbox.h>
 
 #include <librsvg/rsvg.h>
 #include <vector>
+#include <gtkmm/iconview.h>
+#include <glibmm/refptr.h>
+#include <glibmm/ustring.h>
+#include <gtkmm/liststore.h>
 
-#include "Icon.h"
+#define ICON_DIRECTORY "../assets/sample-icons"
 
-#define ICON_PATH "../assets/sample-icons"
-
-class Vectah : public Gtk::ScrolledWindow {
+class Vectah : public Gtk::Window {
 
 public:
     Vectah();
     ~Vectah();
 
+protected:
+    // Tree model columns:
+    //
+    class ModelColumns : public Gtk::TreeModel::ColumnRecord
+    {
+    public:
+
+        ModelColumns()
+        {
+            add(colFilename);
+            add(colDescription);
+            add(colPixbuf);
+        }
+
+        Gtk::TreeModelColumn<std::string> colFilename;
+        Gtk::TreeModelColumn<Glib::ustring>  colDescription;
+        Gtk::TreeModelColumn<Glib::RefPtr<Gdk::Pixbuf> > colPixbuf;
+    };
+
 private:
+    void LoadIcons(const std::string& directory);
+    void AddEntry(const std::string &filePath, const std::string& description);
+    void OnButtonQuit();
+    void OnItemActivated(const Gtk::TreeModel::Path& path);
+    void OnSelectionChanged();
+
     //Member widgets:
-    std::vector<Icon*> icons;
-    Gtk::Grid iconGrid;
+    Gtk::Box vBox;
+    Gtk::ScrolledWindow scrolledWindow;
+    Gtk::IconView iconView;
+    Gtk::Button buttonQuit;
+    Gtk::ButtonBox buttonBox;
+
+    Gtk::Entry entryIconPath;
+    ModelColumns columns;
+
+    Glib::RefPtr<Gtk::ListStore> listModel;
 };
 
 #endif //VECTAH_VECTAH_H

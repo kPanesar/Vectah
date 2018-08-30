@@ -7,10 +7,9 @@
 namespace fs = std::filesystem;
 
 Vectah::Vectah() :
-vBox(Gtk::Orientation::ORIENTATION_VERTICAL),
-buttonQuit("Quit"),
-entryIconPath()
-{
+        vBox(Gtk::Orientation::ORIENTATION_VERTICAL),
+        buttonQuit("Quit"),
+        entryIconPath() {
     auto screen = get_screen();
     set_default_size(screen->get_width()*0.60f, screen->get_height()*0.60f);
 
@@ -44,84 +43,72 @@ entryIconPath()
     LoadIcons(ICON_DIRECTORY);
 }
 
-Vectah::~Vectah()
-{
+Vectah::~Vectah() {
 }
 
-void Vectah::OnButtonQuit()
-{
+void Vectah::OnButtonQuit() {
     hide();
 }
 
-void Vectah::LoadIcons(const std::string& directory) {
+void Vectah::LoadIcons(const std::string &directory) {
     if (directory.empty())
         return;
 
-    for (auto & p : fs::recursive_directory_iterator(directory))
-    {
+    for (auto &p : fs::recursive_directory_iterator(directory)) {
         if (p.is_directory() || !(p.path().extension() == ".svg" || p.path().extension() == ".png")) continue;
         AddEntry(p.path().string(), p.path().filename().string());
     }
 }
 
-void Vectah::AddEntry(const std::string &filePath, const std::string& description)
-{
+void Vectah::AddEntry(const std::string &filePath, const std::string &description) {
     auto row = *(listModel->append());
     row[columns.colFilename] = filePath;
     row[columns.colDescription] = description;
 
-    try
-    {
+    try {
         row[columns.colPixbuf] = Gdk::Pixbuf::create_from_file(filePath);
     }
-    catch (const Gdk::PixbufError& ex)
-    {
+    catch (const Gdk::PixbufError &ex) {
         std::cerr << "Gdk::PixbufError: " << ex.what() << std::endl;
     }
-    catch (const Glib::FileError& ex)
-    {
+    catch (const Glib::FileError &ex) {
         std::cerr << "Glib::FileError: " << ex.what() << std::endl;
     }
-    catch (const Glib::Error& ex)
-    {
+    catch (const Glib::Error &ex) {
         std::cerr << "Glib::Error: " << ex.what() << std::endl;
     }
 }
 
 
-void Vectah::OnItemActivated(const Gtk::TreeModel::Path& path)
-{
+void Vectah::OnItemActivated(const Gtk::TreeModel::Path &path) {
     auto iter = listModel->get_iter(path);
     auto row = *iter;
 
     const std::string filename = row[columns.colFilename];
     const Glib::ustring description = row[columns.colDescription];
 
-    std::cout  << "Item activated: filename="
-               << filename
-               << ", description="
-               << description
-               << std::endl;
+    std::cout << "Item activated: filename="
+              << filename
+              << ", description="
+              << description
+              << std::endl;
 }
 
-void Vectah::OnSelectionChanged()
-{
-    typedef std::vector<Gtk::TreeModel::Path> type_vec_paths;
-    type_vec_paths selected = iconView.get_selected_items();
-    if(!selected.empty())
-    {
-        const Gtk::TreeModel::Path& path = *selected.begin();
+void Vectah::OnSelectionChanged() {
+    std::vector<Gtk::TreeModel::Path> selected = iconView.get_selected_items();
+    if (!selected.empty()) {
+        const Gtk::TreeModel::Path &path = *selected.begin();
         auto iter = listModel->get_iter(path);
         auto row = *iter;
 
         const std::string filename = row[columns.colFilename];
         const Glib::ustring description = row[columns.colDescription];
 
-        std::cout  << "Selection Changed to: filename="
-                   << filename
-                   << ", description="
-                   << description
-                   << std::endl;
+        std::cout << "Selection Changed to: filename="
+                  << filename
+                  << ", description="
+                  << description
+                  << std::endl;
     }
 }
 

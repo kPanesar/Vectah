@@ -4,8 +4,8 @@ project(Vectah)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake/Modules")
 
-set(SOURCE_FILES src/main.cpp src/Vectah.cpp src/IconArea.cpp src/Icon.cpp src/Icon.h)
-set(HEADER_FILES src/Vectah.h src/IconArea.h src/Icon.cpp src/Icon.h)
+set(SOURCE_FILES src/main.cpp src/Vectah.cpp)
+set(HEADER_FILES src/Vectah.h)
 add_executable(Vectah ${SOURCE_FILES} ${HEADER_FILES})
 
 if (MSVC)

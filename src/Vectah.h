@@ -29,7 +29,6 @@ public:
 
 protected:
     // Tree model columns:
-    //
     class ModelColumns : public Gtk::TreeModel::ColumnRecord {
     public:
 
@@ -56,15 +55,14 @@ private:
     void OnSelectionChanged();
 
     //Member widgets:
-    Gtk::Box vBox;
     Gtk::ScrolledWindow scrolledWindow;
     Gtk::IconView iconView;
     Gtk::Button buttonQuit;
+    Gtk::Entry entryIconPath;
+    Gtk::Box vBox;
     Gtk::ButtonBox buttonBox;
 
-    Gtk::Entry entryIconPath;
     ModelColumns columns;
-
     Glib::RefPtr<Gtk::ListStore> listModel;
 };
 

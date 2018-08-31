@@ -14,6 +14,7 @@
 #include <gtkmm/treemodel.h>
 #include <gtkmm/buttonbox.h>
 #include <gtkmm/liststore.h>
+#include <gtkmm/colorbutton.h>
 #include <gdkmm/screen.h>
 #include <glibmm/refptr.h>
 #include <glibmm/ustring.h>
@@ -48,19 +49,19 @@ private:
 
     void AddEntry(const std::string &filePath, const std::string &description);
 
-    void OnButtonQuit();
+    void OnBackgroundColorSet();
 
     void OnItemActivated(const Gtk::TreeModel::Path &path);
 
     void OnSelectionChanged();
 
     //Member widgets:
+    Gtk::Box vBox;
     Gtk::ScrolledWindow scrolledWindow;
     Gtk::IconView iconView;
-    Gtk::Button buttonQuit;
     Gtk::Entry entryIconPath;
-    Gtk::Box vBox;
-    Gtk::ButtonBox buttonBox;
+    Gtk::ColorButton colorButtonBackground;
+    Gdk::RGBA colorBackground;
 
     ModelColumns columns;
     Glib::RefPtr<Gtk::ListStore> listModel;

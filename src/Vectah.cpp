@@ -1,23 +1,19 @@
 #include "Vectah.h"
 
 #include <filesystem>
+#include <gtkmm/colorchooserdialog.h>
 #include <giomm.h>
 #include <iostream>
 
 namespace fs = std::filesystem;
 
 Vectah::Vectah() :
-        vBox(Gtk::Orientation::ORIENTATION_VERTICAL),
-        buttonQuit("Quit"),
+        vBox(Gtk::Orientation::ORIENTATION_VERTICAL, 25),
         entryIconPath() {
     auto screen = get_screen();
     set_default_size(screen->get_width()*0.60f, screen->get_height()*0.60f);
 
     scrolledWindow.set_policy(Gtk::PolicyType::POLICY_AUTOMATIC, Gtk::PolicyType::POLICY_AUTOMATIC);
-
-    buttonBox.pack_start(buttonQuit, Gtk::PackOptions::PACK_SHRINK);
-    buttonBox.set_border_width(6);
-    buttonBox.set_layout(Gtk::ButtonBoxStyle::BUTTONBOX_END);
 
     vBox.set_border_width(5);
 
@@ -32,22 +28,30 @@ Vectah::Vectah() :
     iconView.signal_selection_changed().connect(sigc::mem_fun(*this, &Vectah::OnSelectionChanged));
 
     scrolledWindow.add(iconView);
+    vBox.pack_start(colorButtonBackground, Gtk::PackOptions::PACK_SHRINK);
     vBox.pack_start(scrolledWindow, Gtk::PackOptions::PACK_EXPAND_WIDGET);
-    vBox.pack_start(buttonBox, Gtk::PackOptions::PACK_SHRINK);
     add(vBox);
 
-    show_all_children();
-
-    buttonQuit.signal_clicked().connect(sigc::mem_fun(*this, &Vectah::OnButtonQuit));
+    //Set start color:
+    colorBackground.set_rgba(1,1,1,1.0);
+    colorButtonBackground.set_rgba(colorBackground);
+    colorButtonBackground.signal_color_set().connect(sigc::mem_fun(*this, &Vectah::OnBackgroundColorSet));
+    OnBackgroundColorSet();
 
     LoadIcons(ICON_DIRECTORY);
+
+    show_all_children();
 }
 
 Vectah::~Vectah() {
 }
 
-void Vectah::OnButtonQuit() {
-    hide();
+void Vectah::OnBackgroundColorSet() {
+    colorBackground = colorButtonBackground.get_rgba();
+//    override_background_color(colorBackground);
+//    vBox.override_background_color(colorBackground);
+//    scrolledWindow.override_background_color(colorBackground);
+    iconView.override_background_color(colorBackground);
 }
 
 void Vectah::LoadIcons(const std::string &directory) {

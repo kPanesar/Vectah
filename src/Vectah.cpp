@@ -1,7 +1,8 @@
 #include "Vectah.h"
 
 #include <filesystem>
-#include <gtkmm/colorchooserdialog.h>
+#include <gtkmm/filechooser.h>
+#include <gtkmm/filechooserdialog.h>
 #include <giomm.h>
 #include <iostream>
 
@@ -9,13 +10,49 @@ namespace fs = std::filesystem;
 
 Vectah::Vectah() :
         vBox(Gtk::Orientation::ORIENTATION_VERTICAL, 25),
-        entryIconPath() {
-    auto screen = get_screen();
-    set_default_size(screen->get_width()*0.60f, screen->get_height()*0.60f);
+        entryIconPath(),
+        boxSearch(Gtk::Orientation::ORIENTATION_VERTICAL),
+        toggleButtonSearch()
+        {
+    set_title("Vectah");
+    set_default_size(950, 700);
+
+    searchbar.set_show_close_button();
+    searchbar.connect_entry(searchentry);
+
+    searchbar.property_search_mode_enabled().signal_changed().connect(
+            sigc::mem_fun(*this, &Vectah::OnSearchbarRevealChanged));
+
+    toggleButtonSearch.set_image_from_icon_name("system-search-symbolic");
+    toggleButtonSearch.set_active(false);
+    toggleButtonSearch.property_active().signal_changed().connect(sigc::mem_fun(*this, &Vectah::OnSearchModeChanged));
+
+    // Searchbar Layout
+    boxSearch.pack_start(searchentry, Gtk::PackOptions::PACK_EXPAND_WIDGET);
+    boxSearch.set_spacing(6);
+    searchbar.add(boxSearch);
+
+    // Connect signal handlers.
+    searchentry.signal_search_changed().connect(sigc::mem_fun(*this, &Vectah::OnSearchTextChanged));
+
+    buttonOpenFolder.set_image_from_icon_name("folder-open-symbolic");
+    buttonOpenFolder.signal_clicked().connect(sigc::mem_fun(*this, &Vectah::onButtonOpenFolderClicked));
+
+    headerBar.set_title(get_title());
+    headerBar.set_show_close_button();
+    headerBar.pack_start(buttonOpenFolder);
+    //headerBar.pack_start(toggleButtonSearch);
+    headerBar.pack_start(colorButtonBackground);
+    toggleButtonSearch.set_halign(Gtk::ALIGN_END);
+    colorButtonBackground.set_halign(Gtk::ALIGN_END);
+    set_titlebar(headerBar);
 
     scrolledWindow.set_policy(Gtk::PolicyType::POLICY_AUTOMATIC, Gtk::PolicyType::POLICY_AUTOMATIC);
 
-    vBox.set_border_width(5);
+    vBox.set_margin_top(12);
+    vBox.set_margin_bottom(12);
+    vBox.set_margin_left(12);
+    vBox.set_margin_right(12);
 
     listModel = Gtk::ListStore::create(columns);
     listModel->set_sort_column(columns.colDescription, Gtk::SortType::SORT_ASCENDING);
@@ -28,7 +65,7 @@ Vectah::Vectah() :
     iconView.signal_selection_changed().connect(sigc::mem_fun(*this, &Vectah::OnSelectionChanged));
 
     scrolledWindow.add(iconView);
-    vBox.pack_start(colorButtonBackground, Gtk::PackOptions::PACK_SHRINK);
+    //vBox.pack_start(searchbar, Gtk::PackOptions::PACK_SHRINK);
     vBox.pack_start(scrolledWindow, Gtk::PackOptions::PACK_EXPAND_WIDGET);
     add(vBox);
 
@@ -48,15 +85,63 @@ Vectah::~Vectah() {
 
 void Vectah::OnBackgroundColorSet() {
     colorBackground = colorButtonBackground.get_rgba();
-//    override_background_color(colorBackground);
-//    vBox.override_background_color(colorBackground);
-//    scrolledWindow.override_background_color(colorBackground);
+    override_background_color(colorBackground);
+    vBox.override_background_color(colorBackground);
     iconView.override_background_color(colorBackground);
 }
+
+void Vectah::onButtonOpenFolderClicked() {
+    Gtk::FileChooserDialog dialog("Please choose a folder",
+            Gtk::FILE_CHOOSER_ACTION_SELECT_FOLDER);
+    dialog.set_transient_for(*this);
+
+    //Add response buttons the the dialog:
+    dialog.add_button("_Cancel", Gtk::ResponseType::RESPONSE_CANCEL);
+    dialog.add_button("Select", Gtk::ResponseType::RESPONSE_OK);
+
+    int result = dialog.run();
+
+    //Handle the response:
+    switch(result)
+    {
+    case Gtk::ResponseType::RESPONSE_OK:
+    {
+        LoadIcons(dialog.get_filename());
+        break;
+    }
+    case Gtk::ResponseType::RESPONSE_CANCEL:
+    {
+        break;
+    }
+    default:
+    {
+        break;
+    }
+    }
+}
+
+void Vectah::OnSearchTextChanged() {
+
+}
+
+void Vectah::OnSearchbarRevealChanged()
+{
+    const bool revealed = searchbar.get_search_mode();
+    toggleButtonSearch.set_active(revealed);
+}
+
+void Vectah::OnSearchModeChanged()
+{
+    const bool search_mode = toggleButtonSearch.get_active();
+    searchbar.set_search_mode(search_mode);
+}
+
 
 void Vectah::LoadIcons(const std::string &directory) {
     if (directory.empty())
         return;
+
+    listModel->clear();
 
     for (auto &p : fs::recursive_directory_iterator(directory)) {
         if (p.is_directory() || !(p.path().extension() == ".svg" || p.path().extension() == ".png")) continue;
@@ -70,7 +155,8 @@ void Vectah::AddEntry(const std::string &filePath, const std::string &descriptio
     row[columns.colDescription] = description;
 
     try {
-        row[columns.colPixbuf] = Gdk::Pixbuf::create_from_file(filePath);
+        Glib::RefPtr<Gdk::Pixbuf> image = Gdk::Pixbuf::create_from_file(filePath, 60, 60);
+        row[columns.colPixbuf] = image;
     }
     catch (const Gdk::PixbufError &ex) {
         std::cerr << "Gdk::PixbufError: " << ex.what() << std::endl;

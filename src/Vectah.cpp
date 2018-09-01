@@ -8,12 +8,13 @@
 
 namespace fs = std::filesystem;
 
-Vectah::Vectah() :
+Vectah::Vectah()
+        :
         vBox(Gtk::Orientation::ORIENTATION_VERTICAL, 25),
         entryIconPath(),
         boxSearch(Gtk::Orientation::ORIENTATION_VERTICAL),
         toggleButtonSearch()
-        {
+{
     set_title("Vectah");
     set_default_size(950, 700);
 
@@ -70,7 +71,7 @@ Vectah::Vectah() :
     add(vBox);
 
     //Set start color:
-    colorBackground.set_rgba(1,1,1,1.0);
+    colorBackground.set_rgba(1, 1, 1, 1.0);
     colorButtonBackground.set_rgba(colorBackground);
     colorButtonBackground.signal_color_set().connect(sigc::mem_fun(*this, &Vectah::OnBackgroundColorSet));
     OnBackgroundColorSet();
@@ -80,17 +81,20 @@ Vectah::Vectah() :
     show_all_children();
 }
 
-Vectah::~Vectah() {
+Vectah::~Vectah()
+{
 }
 
-void Vectah::OnBackgroundColorSet() {
+void Vectah::OnBackgroundColorSet()
+{
     colorBackground = colorButtonBackground.get_rgba();
     override_background_color(colorBackground);
     vBox.override_background_color(colorBackground);
     iconView.override_background_color(colorBackground);
 }
 
-void Vectah::onButtonOpenFolderClicked() {
+void Vectah::onButtonOpenFolderClicked()
+{
     Gtk::FileChooserDialog dialog("Please choose a folder",
             Gtk::FILE_CHOOSER_ACTION_SELECT_FOLDER);
     dialog.set_transient_for(*this);
@@ -102,25 +106,22 @@ void Vectah::onButtonOpenFolderClicked() {
     int result = dialog.run();
 
     //Handle the response:
-    switch(result)
-    {
-    case Gtk::ResponseType::RESPONSE_OK:
-    {
+    switch (result) {
+    case Gtk::ResponseType::RESPONSE_OK: {
         LoadIcons(dialog.get_filename());
         break;
     }
-    case Gtk::ResponseType::RESPONSE_CANCEL:
-    {
+    case Gtk::ResponseType::RESPONSE_CANCEL: {
         break;
     }
-    default:
-    {
+    default: {
         break;
     }
     }
 }
 
-void Vectah::OnSearchTextChanged() {
+void Vectah::OnSearchTextChanged()
+{
 
 }
 
@@ -136,20 +137,21 @@ void Vectah::OnSearchModeChanged()
     searchbar.set_search_mode(search_mode);
 }
 
-
-void Vectah::LoadIcons(const std::string &directory) {
+void Vectah::LoadIcons(const std::string& directory)
+{
     if (directory.empty())
         return;
 
     listModel->clear();
 
-    for (auto &p : fs::recursive_directory_iterator(directory)) {
-        if (p.is_directory() || !(p.path().extension() == ".svg" || p.path().extension() == ".png")) continue;
+    for (auto& p : fs::recursive_directory_iterator(directory)) {
+        if (p.is_directory() || !(p.path().extension()==".svg" || p.path().extension()==".png")) continue;
         AddEntry(p.path().string(), p.path().filename().string());
     }
 }
 
-void Vectah::AddEntry(const std::string &filePath, const std::string &description) {
+void Vectah::AddEntry(const std::string& filePath, const std::string& description)
+{
     auto row = *(listModel->append());
     row[columns.colFilename] = filePath;
     row[columns.colDescription] = description;
@@ -158,19 +160,19 @@ void Vectah::AddEntry(const std::string &filePath, const std::string &descriptio
         Glib::RefPtr<Gdk::Pixbuf> image = Gdk::Pixbuf::create_from_file(filePath, 60, 60);
         row[columns.colPixbuf] = image;
     }
-    catch (const Gdk::PixbufError &ex) {
+    catch (const Gdk::PixbufError& ex) {
         std::cerr << "Gdk::PixbufError: " << ex.what() << std::endl;
     }
-    catch (const Glib::FileError &ex) {
+    catch (const Glib::FileError& ex) {
         std::cerr << "Glib::FileError: " << ex.what() << std::endl;
     }
-    catch (const Glib::Error &ex) {
+    catch (const Glib::Error& ex) {
         std::cerr << "Glib::Error: " << ex.what() << std::endl;
     }
 }
 
-
-void Vectah::OnItemActivated(const Gtk::TreeModel::Path &path) {
+void Vectah::OnItemActivated(const Gtk::TreeModel::Path& path)
+{
     auto iter = listModel->get_iter(path);
     auto row = *iter;
 
@@ -184,10 +186,11 @@ void Vectah::OnItemActivated(const Gtk::TreeModel::Path &path) {
               << std::endl;
 }
 
-void Vectah::OnSelectionChanged() {
+void Vectah::OnSelectionChanged()
+{
     std::vector<Gtk::TreeModel::Path> selected = iconView.get_selected_items();
     if (!selected.empty()) {
-        const Gtk::TreeModel::Path &path = *selected.begin();
+        const Gtk::TreeModel::Path& path = *selected.begin();
         auto iter = listModel->get_iter(path);
         auto row = *iter;
 

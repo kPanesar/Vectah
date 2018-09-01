@@ -32,19 +32,19 @@
 
 #define ICON_DIRECTORY "../assets/sample-icons"
 
-class Vectah : public Gtk::Window {
+class Vectah: public Gtk::Window {
 
 public:
     Vectah();
-
     ~Vectah();
 
 protected:
     // Tree model columns:
-    class ModelColumns : public Gtk::TreeModel::ColumnRecord {
+    class ModelColumns: public Gtk::TreeModel::ColumnRecord {
     public:
 
-        ModelColumns() {
+        ModelColumns()
+        {
             add(colFilename);
             add(colDescription);
             add(colPixbuf);
@@ -59,15 +59,14 @@ private:
 
     // Slots
     void OnBackgroundColorSet();
-    void OnItemActivated(const Gtk::TreeModel::Path &path);
+    void OnItemActivated(const Gtk::TreeModel::Path& path);
     void OnSearchTextChanged();
     void OnSelectionChanged();
     void OnSearchbarRevealChanged();
     void OnSearchModeChanged();
     void onButtonOpenFolderClicked();
-
-    void LoadIcons(const std::string &directory);
-    void AddEntry(const std::string &filePath, const std::string &description);
+    void LoadIcons(const std::string& directory);
+    void AddEntry(const std::string& filePath, const std::string& description);
 
     //Member widgets:
     Gtk::Box vBox;

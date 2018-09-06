@@ -30,13 +30,21 @@
 #include <glibmm/ustring.h>
 #include <glibmm/binding.h>
 
+#include <filesystem>
+#include <gtkmm/filechooser.h>
+#include <gtkmm/filechooserdialog.h>
+#include <giomm.h>
+#include <iostream>
+
+namespace fs = std::filesystem;
+
 #define ICON_DIRECTORY "../assets/sample-icons"
 
 class Vectah: public Gtk::Window {
 
 public:
     Vectah();
-    ~Vectah();
+    ~Vectah() = default;
 
 protected:
     // Tree model columns:
@@ -65,20 +73,20 @@ private:
     void OnSearchbarRevealChanged();
     void OnSearchModeChanged();
     void onButtonOpenFolderClicked();
-    void LoadIcons(const std::string& directory);
+    void LoadIcons(const fs::path& directory);
     void AddEntry(const std::string& filePath, const std::string& description);
 
     //Member widgets:
     Gtk::Box vBox;
+    Gtk::Entry entryIconPath;
     Gtk::Box boxSearch;
+    Gtk::ToggleButton toggleButtonSearch;
     Gtk::ScrolledWindow scrolledWindow;
     Gtk::IconView iconView;
-    Gtk::Entry entryIconPath;
     Gtk::ColorButton colorButtonBackground;
     Gdk::RGBA colorBackground;
-    Gtk::ToggleButton toggleButtonSearch;
     Gtk::SearchBar searchbar;
-    Gtk::SearchEntry searchentry;
+    Gtk::SearchEntry searchEntry;
     Gtk::HeaderBar headerBar;
     Gtk::Button buttonOpenFolder;
 

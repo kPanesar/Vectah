@@ -1,13 +1,5 @@
 #include "Vectah.h"
 
-#include <filesystem>
-#include <gtkmm/filechooser.h>
-#include <gtkmm/filechooserdialog.h>
-#include <giomm.h>
-#include <iostream>
-
-namespace fs = std::filesystem;
-
 Vectah::Vectah()
         :
         vBox(Gtk::Orientation::ORIENTATION_VERTICAL, 25),
@@ -19,7 +11,7 @@ Vectah::Vectah()
     set_default_size(950, 700);
 
     searchbar.set_show_close_button();
-    searchbar.connect_entry(searchentry);
+    searchbar.connect_entry(searchEntry);
 
     searchbar.property_search_mode_enabled().signal_changed().connect(
             sigc::mem_fun(*this, &Vectah::OnSearchbarRevealChanged));
@@ -29,12 +21,12 @@ Vectah::Vectah()
     toggleButtonSearch.property_active().signal_changed().connect(sigc::mem_fun(*this, &Vectah::OnSearchModeChanged));
 
     // Searchbar Layout
-    boxSearch.pack_start(searchentry, Gtk::PackOptions::PACK_EXPAND_WIDGET);
+    boxSearch.pack_start(searchEntry, Gtk::PackOptions::PACK_EXPAND_WIDGET);
     boxSearch.set_spacing(6);
     searchbar.add(boxSearch);
 
     // Connect signal handlers.
-    searchentry.signal_search_changed().connect(sigc::mem_fun(*this, &Vectah::OnSearchTextChanged));
+    searchEntry.signal_search_changed().connect(sigc::mem_fun(*this, &Vectah::OnSearchTextChanged));
 
     buttonOpenFolder.set_image_from_icon_name("folder-open-symbolic");
     buttonOpenFolder.signal_clicked().connect(sigc::mem_fun(*this, &Vectah::onButtonOpenFolderClicked));
@@ -76,13 +68,9 @@ Vectah::Vectah()
     colorButtonBackground.signal_color_set().connect(sigc::mem_fun(*this, &Vectah::OnBackgroundColorSet));
     OnBackgroundColorSet();
 
-    LoadIcons(ICON_DIRECTORY);
+    LoadIcons(fs::path(ICON_DIRECTORY));
 
     show_all_children();
-}
-
-Vectah::~Vectah()
-{
 }
 
 void Vectah::OnBackgroundColorSet()
@@ -137,7 +125,7 @@ void Vectah::OnSearchModeChanged()
     searchbar.set_search_mode(search_mode);
 }
 
-void Vectah::LoadIcons(const std::string& directory)
+void Vectah::LoadIcons(const fs::path& directory)
 {
     if (directory.empty())
         return;
@@ -145,7 +133,9 @@ void Vectah::LoadIcons(const std::string& directory)
     listModel->clear();
 
     for (auto& p : fs::recursive_directory_iterator(directory)) {
-        if (p.is_directory() || !(p.path().extension()==".svg" || p.path().extension()==".png")) continue;
+        if (p.is_directory() || !(p.path().extension()==fs::path(".svg") || p.path().extension()==fs::path(".png"))) {
+            continue;
+        }
         AddEntry(p.path().string(), p.path().filename().string());
     }
 }

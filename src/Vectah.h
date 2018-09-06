@@ -72,9 +72,10 @@ private:
     void OnSelectionChanged();
     void OnSearchbarRevealChanged();
     void OnSearchModeChanged();
-    void onButtonOpenFolderClicked();
+    void OnButtonOpenFolderClicked();
     void LoadIcons(const fs::path& directory);
     void AddEntry(const std::string& filePath, const std::string& description);
+    void OnButtonCopyIconPressed();
 
     //Member widgets:
     Gtk::Box vBox;
@@ -89,6 +90,7 @@ private:
     Gtk::SearchEntry searchEntry;
     Gtk::HeaderBar headerBar;
     Gtk::Button buttonOpenFolder;
+    Gtk::Button buttonCopyIcon;
 
     ModelColumns columns;
     Glib::RefPtr<Gtk::ListStore> listModel;

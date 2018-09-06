@@ -29,11 +29,23 @@ Vectah::Vectah()
     searchEntry.signal_search_changed().connect(sigc::mem_fun(*this, &Vectah::OnSearchTextChanged));
 
     buttonOpenFolder.set_image_from_icon_name("folder-open-symbolic");
-    buttonOpenFolder.signal_clicked().connect(sigc::mem_fun(*this, &Vectah::onButtonOpenFolderClicked));
+    buttonOpenFolder.set_tooltip_text("Open");
+    buttonOpenFolder.signal_clicked().connect(sigc::mem_fun(*this, &Vectah::OnButtonOpenFolderClicked));
+
+    buttonCopyIcon.set_image_from_icon_name("edit-copy-symbolic");
+    buttonCopyIcon.set_tooltip_text("Copy");
+    buttonCopyIcon.signal_clicked().connect(sigc::mem_fun(*this, &Vectah::OnButtonCopyIconPressed));
+
+    //Set start color:
+    colorBackground.set_rgba(1, 1, 1, 1.0);
+    colorButtonBackground.set_tooltip_text("Change background color");
+    colorButtonBackground.set_rgba(colorBackground);
+    colorButtonBackground.signal_color_set().connect(sigc::mem_fun(*this, &Vectah::OnBackgroundColorSet));
 
     headerBar.set_title(get_title());
     headerBar.set_show_close_button();
     headerBar.pack_start(buttonOpenFolder);
+    headerBar.pack_start(buttonCopyIcon);
     //headerBar.pack_start(toggleButtonSearch);
     headerBar.pack_start(colorButtonBackground);
     toggleButtonSearch.set_halign(Gtk::ALIGN_END);
@@ -62,10 +74,6 @@ Vectah::Vectah()
     vBox.pack_start(scrolledWindow, Gtk::PackOptions::PACK_EXPAND_WIDGET);
     add(vBox);
 
-    //Set start color:
-    colorBackground.set_rgba(1, 1, 1, 1.0);
-    colorButtonBackground.set_rgba(colorBackground);
-    colorButtonBackground.signal_color_set().connect(sigc::mem_fun(*this, &Vectah::OnBackgroundColorSet));
     OnBackgroundColorSet();
 
     LoadIcons(fs::path(ICON_DIRECTORY));
@@ -81,7 +89,7 @@ void Vectah::OnBackgroundColorSet()
     iconView.override_background_color(colorBackground);
 }
 
-void Vectah::onButtonOpenFolderClicked()
+void Vectah::OnButtonOpenFolderClicked()
 {
     Gtk::FileChooserDialog dialog("Please choose a folder",
             Gtk::FILE_CHOOSER_ACTION_SELECT_FOLDER);
@@ -105,6 +113,22 @@ void Vectah::onButtonOpenFolderClicked()
     default: {
         break;
     }
+    }
+}
+
+void Vectah::OnButtonCopyIconPressed() {
+    auto clipboard = Gtk::Clipboard::get();
+
+    std::vector<Gtk::TreeModel::Path> selected = iconView.get_selected_items();
+    if (!selected.empty()) {
+        const Gtk::TreeModel::Path& path = *selected.begin();
+        auto iter = listModel->get_iter(path);
+        auto row = *iter;
+
+        const Glib::ustring description = row[columns.colDescription];
+
+//        clipboard->set_text(description);
+        clipboard->set_image(row[columns.colPixbuf]);
     }
 }
 

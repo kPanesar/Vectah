@@ -1,13 +1,14 @@
-#include "Vectah.h"
-#include <iostream>
-#include <gtkmm/application.h>
+#include "vectah.h"
 
-using namespace std;
+#include <QApplication>
 
-int main(int argc, char* argv[])
+int main(int argc, char *argv[])
 {
-    auto app = Gtk::Application::create("org.kpanesar.vectah");
-    Vectah mainWindow;
+    QApplication app(argc, argv);
+    app.setAttribute(Qt::AA_DontCreateNativeWidgetSiblings);
 
-    return app->run(mainWindow, argc, argv);
+    Vectah window;
+    window.show();
+
+    return app.exec();
 }

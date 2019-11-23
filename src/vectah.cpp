@@ -12,7 +12,7 @@ Vectah::Vectah(QWidget *parent)
     QSplitter *vSplitter = new QSplitter;
     vSplitter->setOrientation(Qt::Vertical);
 
-    View *view = new View("Main Icon view");
+    view = new View("Main Icon view");
     scene = new QGraphicsScene(this);
     view->view()->setScene(scene);
     vSplitter->addWidget(view);
@@ -23,8 +23,6 @@ Vectah::Vectah(QWidget *parent)
 
     setWindowTitle(tr("Icon Example"));
     showMaximized();
-
-    populateScene();
 }
 
 void Vectah::populateScene()
@@ -32,35 +30,39 @@ void Vectah::populateScene()
     QSize icon_size(100,100);
     QSize margin(icon_size*0.4);
     int row = 1;
-    int column = 1;
+    int column = 0;
+    int max_size = view->size().width() - (icon_size.width()*2);
 
 //    scene->setBackgroundBrush(QBrush(QColor(Qt::GlobalColor::black)));
+    scene->clear();
 
-    QDir dir("../assets/");
+    QDir dir("../assets");
     dir.setFilter(QDir::Files | QDir::NoSymLinks);
     dir.setSorting(QDir::Name);
 
     QDirIterator it(dir.path(), QStringList() << "*.svg", QDir::Files, QDirIterator::Subdirectories);
     while (it.hasNext()){
         QGraphicsItem *item = new Icon(it.next(), icon_size);
-        item->setPos(QPointF(column*(icon_size.width() + margin.width()), row*(icon_size.height() + margin.height())));
-        item->setFlag(QGraphicsItem::ItemIsSelectable, true);
-        scene->addItem(item);
+        int x = column*(icon_size.width() + margin.width());
+        int y = row*(icon_size.height() + margin.height());
 
-        if(column > 50) {
+        if(x > max_size) {
             column = 0;
             row++;
         }
-        column++;
-    }
-
-    // Populate scene
-    for (int i = 0; i < 0; i += icon_size.width() + margin.width()) {
-        for (int j = 0; j < 24000; j += icon_size.height() + margin.height()) {
-            QGraphicsItem *item = new Icon(":/Versions.svg", icon_size);
-            item->setPos(QPointF(i, j));
+        else
+        {
+            item->setPos(QPointF(x, y));
             item->setFlag(QGraphicsItem::ItemIsSelectable, true);
             scene->addItem(item);
+            column++;
         }
+
     }
+}
+
+void Vectah::resizeEvent(QResizeEvent* event)
+{
+   QWidget::resizeEvent(event);
+   this->populateScene();
 }

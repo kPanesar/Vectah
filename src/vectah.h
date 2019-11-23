@@ -8,17 +8,25 @@ class QGraphicsScene;
 class QSplitter;
 QT_END_NAMESPACE
 
+class View;
+
 class Vectah : public QWidget
 {
     Q_OBJECT
 public:
     Vectah(QWidget *parent = 0);
 
-private:
-    void setupMatrix();
+protected:
+    void resizeEvent(QResizeEvent *event) override;
+
+private slots:
     void populateScene();
 
+private:
+    void setupMatrix();
+
     QGraphicsScene *scene;
+    View *view;
     QSplitter *h1Splitter;
     QSplitter *h2Splitter;
 };
